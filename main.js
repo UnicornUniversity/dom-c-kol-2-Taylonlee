@@ -1,35 +1,116 @@
+// ------------------------------------------------------
+// 1. Pomocné funkce
+// ------------------------------------------------------
+
+/**
+ * Převádí desítkové číslo na binární řetězec.
+ * @param {number} decimal - Desítkové číslo ke převodu.
+ * @returns {string} Číslo v binární podobě.
+ */
+function decimalToBinary(decimal) {
+    // Ošetření speciálního případu pro vstup 0
+    if (decimal === 0) {
+        return "0";
+    }
+
+    let currentValue = decimal;
+    let binary = "";
+
+    while (currentValue > 0) {
+        if (currentValue % 2 === 1) {
+            binary = "1" + binary;
+        } else {
+            binary = "0" + binary;
+        }
+        currentValue = Math.floor(currentValue / 2);
+    }
+    return binary;
+}
+
+/**
+ * Převádí binární řetězec na desítkové číslo.
+ * @param {string} binaryString - Binární řetězec ke převodu.
+ * @returns {number} Číslo v desítkové podobě.
+ */
+function binaryToDecimal(binaryString) {
+    let decimal = 0;
+    let power = 0;
+
+    // Procházíme řetězec odzadu (od nejméně významného bitu)
+    for (let i = binaryString.length - 1; i >= 0; i--) {
+        // Získáme číslici na pozici 'i'
+        const digit = binaryString[i];
+
+        if (digit === '1') {
+            // Přičteme odpovídající mocninu dvou (2^power)
+            decimal += Math.pow(2, power);
+        }
+
+        // Zvýšíme exponent pro další pozici
+        power++;
+    }
+    return decimal;
+}
+
+
+// ------------------------------------------------------
+// 2. Hlavní exportované funkce
+// ------------------------------------------------------
+
 //TODO add imports if needed
 //import { exMain } from "./exclude/exampleAss2.js"
-//TODO add/change doc as needed
+
 /**
- * TODO - Write functional code for this application. You can call any other function, but usage of ".toString(numberSystem)" and "Number.parseInt(number, numberSystem)" is forbidden (only permitted when used on individual digits).
- * The main function which calls the application. 
- * TODO - Please, add specific description here for the application purpose.
- * @param {string} inputNumber number that is being converted
- * @param {number} inputNumberSystem numerical system that the inputNumber is being converted from
- * @param {number} outputNumberSystem numerical system that the inputNumber is being converted into
- * @returns {string} containing number converted to output system
+ * Hlavní funkce aplikace, která provádí převod mezi desítkovou (10) a dvojkovou (2) soustavou.
+ * Použití ".toString(numberSystem)" a "Number.parseInt(number, numberSystem)" pro celé číslo je zakázáno.
+ * @param {string} inputNumber - číslo (jako řetězec), které se převádí
+ * @param {number} inputNumberSystem - číselná soustava, ze které se převádí (10 nebo 2)
+ * @param {number} outputNumberSystem - číselná soustava, do které se převádí (10 nebo 2)
+ * @returns {string} obsahující převedené číslo
  */
 export function main(inputNumber, inputNumberSystem, outputNumberSystem) {
-  //TODO code
-  //let dtoOut = exMain(inputNumber, inputNumberSystem, outputNumberSystem);
-  return dtoOut;
+    let result = "";
+
+    // Rozcestník: Rozhodne, kterou konverzi provést
+    if (inputNumberSystem === 10 && outputNumberSystem === 2) {
+        // --- Převod 10 -> 2 ---
+        // Převedeme vstupní řetězec na číslo pro naši pomocnou funkci
+        const decimalValue = Number(inputNumber);
+        result = decimalToBinary(decimalValue);
+
+    } else if (inputNumberSystem === 2 && outputNumberSystem === 10) {
+        // --- Převod 2 -> 10 ---
+        // Naše pomocná funkce přijímá přímo řetězec
+        const decimalValue = binaryToDecimal(inputNumber);
+        // Výsledek (číslo) převedeme zpět na řetězec dle zadání
+        result = String(decimalValue);
+
+    } else if (inputNumberSystem === outputNumberSystem) {
+        // --- Není co převádět (např. 10 -> 10) ---
+        result = inputNumber;
+
+    } else {
+        // --- Nepodporovaný převod ---
+        result = "Error: Unsupported conversion";
+    }
+
+    return result;
 }
 
 /**
- * TODO - Change this to contain all input number systems that your application can convert from.
- * Function which returns which number systems are permitted on input.
- * @returns {Array} array of numbers refering to permitted input systems
+ * Funkce vrací pole povolených VSTUPNÍCH číselných soustav.
+ * @returns {Array} pole čísel povolených vstupních soustav
  */
 export function permittedInputSystems() {
-	return [10, 2];
+    // Dle zadání povolujeme 10 a 2
+    return [10, 2];
 }
 
 /**
- * TODO - Change this to contain all output number systems that your application can convert to.
- * Function which returns which number systems are permitted on output.
- * @returns {Array} array of numbers refering to permitted output systems
+ * Funkce vrací pole povolených VÝSTUPNÍCH číselných soustav.
+ * @returns {Array} pole čísel povolených výstupních soustav
  */
 export function permittedOutputSystems() {
-	return [10, 2];
+    // Dle zadání povolujeme 10 a 2
+    return [10, 2];
 }
